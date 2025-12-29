@@ -1,0 +1,49 @@
+Analyze this urban warfare training frame from timestamp {timestamp}s.
+
+SCENARIO CONTEXT:
+{context}
+
+ANALYSIS REQUIREMENTS:
+Provide a detailed tactical analysis in JSON format with the following structure:
+
+{{
+  "timestamp": {timestamp},
+  "soldier_count": <number>,
+  "cover_summary": {{
+    "full_cover": <count>,
+    "partial_cover": <count>,
+    "no_cover": <count>,
+    "exposed": <count>
+  }},
+  "primary_threats": [
+    {{
+      "type": "window|doorway|corner|rooftop|vehicle",
+      "description": "Brief location description",
+      "threat_level": "high|medium|low"
+    }}
+  ],
+  "tactical_errors": [
+    "Description of tactical error 1",
+    "Description of tactical error 2"
+  ],
+  "tactical_strengths": [
+    "Description of tactical strength 1",
+    "Description of tactical strength 2"
+  ],
+  "movement_analysis": {{
+    "formation": "line|wedge|column|scattered|split-stack",
+    "spacing": "adequate|too_close|too_far",
+    "direction": "Description of movement direction"
+  }},
+  "score": <0-100>,
+  "reasoning": "Brief explanation of the score"
+}}
+
+SCORING CRITERIA:
+- Cover utilization (30 points)
+- Threat awareness (25 points)
+- Formation discipline (20 points)
+- Movement efficiency (15 points)
+- Communication indicators (10 points)
+
+Return ONLY valid JSON, no additional text.

@@ -1,0 +1,76 @@
+Generate a comprehensive performance summary for this urban warfare training exercise.
+
+EXERCISE DATA:
+{exercise_data}
+
+FRAME ANALYSES:
+{frame_analyses}
+
+SUMMARY REQUIREMENTS:
+Provide a detailed performance report in JSON format with the following structure:
+
+{{
+  "exercise_metadata": {{
+    "duration": <seconds>,
+    "frames_analyzed": <count>,
+    "scenario": "<scenario_description>"
+  }},
+  "overall_score": <0-100>,
+  "category_scores": {{
+    "cover_utilization": <0-100>,
+    "threat_awareness": <0-100>,
+    "formation_discipline": <0-100>,
+    "movement_efficiency": <0-100>,
+    "communication": <0-100>
+  }},
+  "performance_metrics": {{
+    "cover_utilization_percentage": <0-100>,
+    "threats_identified_percentage": <0-100>,
+    "threats_missed": <count>,
+    "tactical_errors_count": <count>,
+    "formation_consistency": <0-100>
+  }},
+  "strengths": [
+    "Primary strength 1",
+    "Primary strength 2",
+    "Primary strength 3"
+  ],
+  "areas_for_improvement": [
+    {{
+      "priority": "high|medium|low",
+      "category": "cover|threats|formation|movement|communication",
+      "description": "Specific improvement area",
+      "recommendation": "Actionable recommendation"
+    }}
+  ],
+  "benchmark_comparison": {{
+    "optimal_score": 85,
+    "unit_score": <score>,
+    "percentile": <0-100>,
+    "comparison": "above|at|below"
+  }},
+  "key_incidents": [
+    {{
+      "timestamp": <seconds>,
+      "type": "critical_error|missed_threat|good_tactic|formation_break",
+      "description": "What happened",
+      "impact": "How it affected the exercise"
+    }}
+  ],
+  "training_recommendations": [
+    "Specific training recommendation 1",
+    "Specific training recommendation 2",
+    "Specific training recommendation 3"
+  ],
+  "executive_summary": "2-3 sentence overview of performance"
+}}
+
+ANALYSIS GUIDELINES:
+- Be objective and constructive
+- Focus on actionable feedback
+- Highlight both strengths and weaknesses
+- Provide specific, measurable recommendations
+- Reference specific timestamps when possible
+- Compare performance to doctrinal standards
+
+Return ONLY valid JSON, no additional text.

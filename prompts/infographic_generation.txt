@@ -1,0 +1,103 @@
+Generate a tactical infographic showing a top-down view of the urban warfare training frames.
+
+VIDEO: {video_name}
+DURATION: {duration}s
+FRAMES ANALYZED: {frame_count}
+
+FRAME DATA:
+{frame_summaries}
+
+OVERALL PERFORMANCE:
+- Average Score: {avg_score}/100
+- Total Soldiers: {total_soldiers}
+- Total Tactical Errors: {total_errors}
+- Total Tactical Strengths: {total_strengths}
+
+INFOGRAPHIC REQUIREMENTS:
+
+Create a professional military-style tactical infographic with the following layout:
+
+**LAYOUT STRUCTURE:**
+1. **Title Bar** (Top):
+   - "TACTICAL ANALYSIS - {video_name}"
+   - Overall score badge prominently displayed
+   - Duration and frame count
+
+2. **Frame Panels** (Main Area):
+   - Show {frame_count} panels side-by-side or in a grid
+   - Each panel shows ONE frame from a TOP-DOWN perspective
+   - Use a 3D isometric or bird's-eye view style
+
+3. **For Each Frame Panel:**
+
+   a) **Coverage Zones (Color-coded):**
+      - GREEN zones: Areas covered by soldier's line of fire (safe zones)
+      - RED/PINK zones: Blindspots/uncovered areas (danger zones)
+      - GRAY zones: Walls/obstacles
+      - Use semi-transparent colored overlays on floor plan
+
+   b) **Soldier Positions:**
+      - Show soldiers as numbered icons (1, 2, 3, 4)
+      - Position them accurately in the room layout
+      - Small circles or tactical symbols
+
+   c) **Coverage Arcs:**
+      - Draw green arcs/wedges showing each soldier's field of fire
+      - Wider arc = better coverage
+      - Overlapping arcs = good cross-coverage
+
+   d) **Key Info Per Frame:**
+      - Timestamp (e.g., "9.4s")
+      - Frame score (e.g., "85/100")
+      - Formation type (e.g., "Column", "Split-stack")
+
+4. **Legend** (Bottom or Side):
+   - Green = Covered/Safe zone
+   - Red = Blindspot/Danger zone
+   - Gray = Walls/Obstacles
+   - Numbered icons = Soldier positions
+
+5. **Summary Section** (Bottom):
+   - Key Strengths (bullet points, max 3)
+   - Key Errors (bullet points, max 3)
+   - Training Recommendations (bullet points, max 3)
+
+**VISUAL STYLE GUIDELINES:**
+
+- Use a clean, modern military aesthetic
+- Similar to tactical briefing materials or game UI (Rainbow Six, ARMA style)
+- Dark background with bright accent colors
+- Grid lines or coordinate markings for spatial reference
+- Professional fonts (sans-serif, military-style)
+- High contrast for readability
+- Include subtle 3D perspective or isometric view
+- Make coverage zones semi-transparent (70-80% opacity)
+
+**SPATIAL REPRESENTATION:**
+
+For each frame, represent the room/area layout:
+- Doorways as openings in walls
+- Corners clearly defined
+- Entry points marked
+- Show depth/perspective (not flat 2D)
+- Maintain consistent orientation across all frame panels
+
+**COLOR PALETTE:**
+
+- Background: Dark gray (#2a2a2a) or military green
+- Safe zones: Bright green (#00ff00, 70% opacity)
+- Danger zones: Red (#ff0000, 70% opacity) or pink (#ff5555)
+- Walls: Medium gray (#666666)
+- Text: White (#ffffff) or light gray (#cccccc)
+- Accents: Yellow/gold for highlights
+- Score badges: Color-coded (green >90, yellow 70-89, orange 50-69, red <50)
+
+**REFERENCE STYLE:**
+
+The infographic should look similar to tactical planning diagrams, with:
+- Top-down room layouts showing clear zones of control
+- Visual representation of fields of fire
+- Easy identification of coverage gaps
+- Professional military briefing quality
+
+Generate this tactical infographic now. Make it visually compelling, informative, and suitable for training debriefs.

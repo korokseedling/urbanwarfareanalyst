@@ -1,0 +1,111 @@
+Analyze this urban warfare training frame and provide tactical annotation guidance.
+
+FRAME TIMESTAMP: {timestamp}s
+TACTICAL SCORE: {score}/100
+
+KEY TACTICAL INFORMATION:
+{tactical_summary}
+
+ANNOTATION REQUIREMENTS:
+
+Provide detailed instructions for creating tactical overlays in the following JSON format:
+
+{{
+  "soldiers": [
+    {{
+      "id": "soldier_1",
+      "position": {{
+        "x": <percentage from left 0-100>,
+        "y": <percentage from top 0-100>
+      }},
+      "threat_axis": {{
+        "direction": <angle in degrees 0-360, where 0=right, 90=down, 180=left, 270=up>,
+        "length": <arrow length in percentage 10-30>
+      }},
+      "description": "Brief position description"
+    }}
+  ],
+  "blindspots": [
+    {{
+      "area": {{
+        "x": <percentage from left>,
+        "y": <percentage from top>,
+        "width": <width percentage>,
+        "height": <height percentage>
+      }},
+      "caption": "Uncleared corner" or "Dead space" or "Blind angle",
+      "severity": "high|medium|low"
+    }}
+  ]
+}}
+
+INSTRUCTIONS:
+1. **Soldier Identification**: Locate each visible soldier in the frame
+   - Provide percentage-based coordinates (0-100% from left/top) centered on the soldier's torso
+   - Calculate their threat axis (direction they're aiming)
+   - Use 0-360 degree system (0=east/right, 90=south/down, 180=west/left, 270=north/up)
+
+2. **Threat Axis (Weapon Direction) - CRITICAL ACCURACY REQUIREMENT**:
+   - CAREFULLY examine where each soldier's weapon muzzle is pointed
+   - Look at the weapon barrel direction, NOT body orientation
+   - Consider soldier's stance, weapon position, and line of sight
+   - Arrow must accurately represent the weapon's firing direction
+   - Use clock positions for reference (then convert to degrees):
+     * 12 o'clock (straight up) = 270°
+     * 1 o'clock = 300°
+     * 2 o'clock = 330°
+     * 3 o'clock (right) = 0°
+     * 4 o'clock = 30°
+     * 5 o'clock = 60°
+     * 6 o'clock (straight down) = 90°
+     * 7 o'clock = 120°
+     * 8 o'clock = 150°
+     * 9 o'clock (left) = 180°
+     * 10 o'clock = 210°
+     * 11 o'clock = 240°
+   - Length should be proportional to their effective coverage range (15-25% typical)
+
+3. **Blindspot Identification**:
+   - Identify areas NOT covered by any soldier's line of fire
+   - Common blindspots: corners, behind doors, dead angles, areas behind cover
+   - Prioritize HIGH severity blindspots that pose immediate danger
+   - Limit to 3-5 most critical blindspots
+
+TACTICAL ANALYSIS GUIDELINES:
+- Soldiers facing doorways: 0° or 180° typically
+- Soldiers at corners: 45°, 135°, 225°, or 315° angles
+- Overlapping fields of fire indicate good coverage
+- Gaps between threat axes indicate potential vulnerabilities
+
+WEAPON DIRECTION ANALYSIS STEPS:
+1. Locate the soldier's weapon (rifle/carbine)
+2. Trace the weapon barrel from stock to muzzle
+3. Note where the muzzle is pointing in the frame
+4. Determine clock direction from soldier to target area
+5. Convert to degrees using the clock reference above
+
+CRITICAL VISUAL CUES FOR WEAPON DIRECTION:
+- Look at the ANGLE of the rifle barrel in the image
+- Check if the weapon is pointed DOWNWARD (6 o'clock = 90°) - barrel angles down toward floor
+- Check if weapon is pointed HORIZONTALLY (3 o'clock = 0° or 9 o'clock = 180°) - barrel parallel to ground
+- Check if weapon is pointed UPWARD with angle (1-2 o'clock = 300-330°) - barrel angles up
+- Soldiers aiming at FLOOR/GROUND level targets = 6 o'clock (90°)
+- Soldiers in CQB/room clearing often aim DOWNWARD = 6 o'clock (90°)
+
+COMMON SCENARIOS:
+- Soldier aiming INTO a doorway (towards interior) = depends on door position
+- Soldier aiming DOWN at floor level during entry = 6 o'clock (90°)
+- Soldier clearing room with weapon pointed down = 6 o'clock (90°)
+- Soldier covering corner to their right with slight upward angle = 2 o'clock (330°)
+- Soldier covering corner to their left = 9-10 o'clock (180-210°)
+- Multiple soldiers entering room aiming at ground level = ALL 6 o'clock (90°)
+
+IMPORTANT CORRECTIONS FOR TYPICAL ERRORS:
+- If soldiers are in a room entry/breach and aiming LOW (not at standing target height), direction should be 6 o'clock (90°)
+- If a soldier at bottom of frame is covering into room, likely 2 o'clock (330°) for slight upward angle
+- Default to 6 o'clock (90°) for soldiers in dynamic entry posture with lowered weapons
+
+BE PRECISE: The arrow must follow the actual weapon barrel direction visible in the image.
+VERIFY: If weapon muzzle points toward floor/ground = 6 o'clock (90°)
+
+Return ONLY valid JSON with precise coordinates and directions.
