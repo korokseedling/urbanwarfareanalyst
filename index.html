@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Warfare Training Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --military-dark: #1a1f1a;
+            --military-green: #2a3429;
+            --military-olive: #3d4a3a;
+            --accent-gold: #f4d03f;
+            --status-good: #22c55e;
+            --status-warning: #f59e0b;
+            --status-danger: #ef4444;
+            --text-primary: #f5f5f5;
+            --text-secondary: #d4d4d4;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--military-dark) 0%, var(--military-green) 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+        }
+
+        .card {
+            background: rgba(42, 52, 41, 0.8);
+            border: 2px solid var(--military-olive);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, var(--military-olive) 0%, var(--military-green) 100%);
+            border-bottom: 2px solid var(--accent-gold);
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--military-olive);
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-gold);
+            color: var(--military-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 208, 63, 0.4);
+        }
+
+        .btn-primary.active {
+            background: var(--accent-gold);
+            color: var(--military-dark);
+        }
+
+        .thumbnail {
+            border: 3px solid var(--military-olive);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--military-dark);
+            overflow: hidden;
+        }
+
+        .thumbnail:hover {
+            border-color: var(--accent-gold);
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(244, 208, 63, 0.3);
+        }
+
+        .thumbnail.active {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(244, 208, 63, 0.5);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .score-excellent {
+            background: var(--status-good);
+            color: var(--military-dark);
+        }
+
+        .score-good {
+            background: var(--status-warning);
+            color: var(--military-dark);
+        }
+
+        .score-poor {
+            background: var(--status-danger);
+            color: white;
+        }
+
+        .section-divider {
+            border-top: 2px solid var(--military-olive);
+            margin: 1rem 0;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .stat-item {
+            padding: 0.5rem;
+            background: rgba(26, 31, 26, 0.5);
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 4px;
+        }
+
+        .media-container {
+            background: var(--military-dark);
+            border: 2px solid var(--military-olive);
+            border-radius: 8px;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .media-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .overlay-indicator {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--accent-gold);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .personnel-card {
+            background: rgba(26, 31, 26, 0.7);
+            border: 2px solid var(--military-olive);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .personnel-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 208, 63, 0.2);
+        }
+
+        .personnel-card.expanded {
+            border-color: var(--accent-gold);
+        }
+
+        .soldier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .soldier-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .soldier-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .soldier-unit {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.125rem;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            color: var(--accent-gold);
+        }
+
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .assessment-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .assessment-content.expanded {
+            max-height: 500px;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--military-olive);
+        }
+
+        .assessment-section {
+            margin-bottom: 0.75rem;
+        }
+
+        .assessment-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .assessment-text {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .score-inline {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .list-section {
+            margin-bottom: 1rem;
+        }
+
+        .list-section h3 {
+            color: var(--accent-gold);
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .list-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .list-section li {
+            padding: 0.5rem;
+            margin-bottom: 0.25rem;
+            background: rgba(26, 31, 26, 0.5);
+            border-left: 3px solid var(--military-olive);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .list-section.errors li {
+            border-left-color: var(--status-danger);
+        }
+
+        .list-section.strengths li {
+            border-left-color: var(--status-good);
+        }
+
+        .scrollable {
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+
+        .scrollable::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: var(--military-dark);
+            border-radius: 4px;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: var(--military-olive);
+            border-radius: 4px;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-gold);
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="grid grid-cols-12 gap-4 h-screen">
+        <!-- Left Sidebar: Training Assessment Summary -->
+        <div class="col-span-3">
+            <div class="card h-full flex flex-col">
+                <div class="card-header flex items-center gap-2">
+                    <img src="icons/army_11099060.png" alt="Army Icon" class="w-6 h-6">
+                    Session Report
+                </div>
+                <div class="p-4 flex-1 scrollable">
+                    <!-- Overall Performance -->
+                    <div class="mb-4">
+                        <div class="text-center mb-3">
+                            <div class="text-5xl font-bold mb-2" style="color: var(--accent-gold);" id="overallScore">79.3</div>
+                            <div class="text-sm text-gray-400" id="scoreLabel">OVERALL SCORE</div>
+                            <span class="score-badge score-good mt-2" id="scoreBadge">GOOD</span>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Duration</div>
+                                <div class="font-bold">37.6s</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Location</div>
+                                <div class="font-bold text-xs">Urban Training Facility</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Soldiers</div>
+                                <div class="font-bold" id="soldierCount">11</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Date-time</div>
+                                <div class="font-bold text-xs">29 Dec 2025, 1430H</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <!-- Cover Utilization -->
+                    <div class="mb-4">
+                        <h3 style="color: var(--accent-gold); font-size: 1rem; font-weight: bold; margin-bottom: 0.75rem;">COVER UTILIZATION</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Full Cover</div>
+                                <div class="font-bold" id="fullCover">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Partial</div>
+                                <div class="font-bold" id="partialCover">6</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">No Cover</div>
+                                <div class="font-bold" id="noCover">2</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="text-gray-400 text-xs">Exposed</div>
+                                <div class="font-bold text-red-400" id="exposed">5</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <!-- Tactical Errors -->
+                    <div class="list-section errors mb-4">
+                        <h3 id="errorsHeader">TACTICAL ERRORS (6)</h3>
+                        <ul id="errorsList">
+                            <li>Soldiers 2 and 3 standing upright, presenting larger profile during stacking.</li>
+                            <li>Soldier 1 leaning too far into corner, risking over-exposure.</li>
+                            <li>Trailing elements too close to point men, compressing stack depth.</li>
+                            <li>Tightly grouped stack increases multiple casualty risk at threshold.</li>
+                            <li>Soldiers 2, 3, 4 clustered in doorway, maximizing fatal funnel exposure.</li>
+                        </ul>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <!-- Tactical Strengths -->
+                    <div class="list-section strengths mb-4">
+                        <h3 id="strengthsHeader">TACTICAL STRENGTHS (9)</h3>
+                        <ul id="strengthsList">
+                            <li>Excellent weapon readiness; all weapons shouldered and aimed at threat area.</li>
+                            <li>Tight stack discipline, minimizing footprint at entry point.</li>
+                            <li>Effective use of corner structure for partial concealment during stacking.</li>
+                            <li>Effective split-stack formation maximizing cover on both sides.</li>
+                            <li>Point men positioned correctly for pie slicing or dynamic entry.</li>
+                        </ul>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <!-- Training Recommendations -->
+                    <div class="list-section mb-4">
+                        <h3>TRAINING RECOMMENDATIONS</h3>
+                        <ul>
+                            <li>Practice spacing drills - maintain 3-5 meter intervals during movement.</li>
+                            <li>Continue excellent weapon handling - maintain this standard.</li>
+                            <li>Formation discipline is strong - focus on refining entry techniques.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Main Content Area -->
+        <div class="col-span-9 flex flex-col gap-4">
+            <!-- Training Media Viewer -->
+            <div class="card flex-1">
+                <div class="card-header flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <img src="icons/binoculars_6141858.png" alt="Binoculars Icon" class="w-6 h-6">
+                        AI Footage Analysis
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="backToSummary" class="btn-primary flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                            </svg>
+                            Summary View
+                        </button>
+                        <button id="toggleOverlay" class="btn-primary flex items-center gap-1" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                            </svg>
+                            <span id="overlayButtonText">Show Analysis</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4" style="height: calc(100% - 60px);">
+                    <div class="media-container h-full">
+                        <div id="overlayIndicator" class="overlay-indicator" style="display: none;">
+                            <span id="overlayIndicatorText">Original Frame</span>
+                        </div>
+                        <img id="mainMedia" src="outputs/infographics/infographic_urban_warfare_training.png" alt="Training Analysis">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Recording Thumbnails -->
+            <div class="card">
+                <div class="card-header flex items-center gap-2">
+                    <img src="icons/fishing-vest_5521097.png" alt="Fishing Vest Icon" class="w-6 h-6">
+                    Frame Selection
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-4 gap-3">
+                        <!-- Infographic Thumbnail -->
+                        <div class="thumbnail active" data-type="infographic" data-src="outputs/infographics/infographic_urban_warfare_training.png">
+                            <img src="outputs/infographics/infographic_urban_warfare_training.png" alt="Tactical Analysis Infographic">
+                            <div class="text-center p-2 bg-black bg-opacity-70">
+                                <div class="text-xs font-bold">TACTICAL SUMMARY</div>
+                                <div class="text-xs text-gray-400">Infographic</div>
+                            </div>
+                        </div>
+
+                        <!-- Frame 1 Thumbnail -->
+                        <div class="thumbnail" data-type="frame" data-frame="0" data-original="outputs/urban_warfare_training/frames/key_frame_000_9.4s.jpg" data-annotated="outputs/annotated_frames/urban_warfare_training/annotated_000_9.4s.jpg">
+                            <img src="outputs/urban_warfare_training/frames/key_frame_000_9.4s.jpg" alt="Frame 1">
+                            <div class="text-center p-2 bg-black bg-opacity-70">
+                                <div class="text-xs font-bold">FRAME 1 • 9.4s</div>
+                                <div class="text-xs text-gray-400">Score: 85/100</div>
+                            </div>
+                        </div>
+
+                        <!-- Frame 2 Thumbnail -->
+                        <div class="thumbnail" data-type="frame" data-frame="1" data-original="outputs/urban_warfare_training/frames/key_frame_001_18.9s.jpg" data-annotated="outputs/annotated_frames/urban_warfare_training/annotated_001_18.9s.jpg">
+                            <img src="outputs/urban_warfare_training/frames/key_frame_001_18.9s.jpg" alt="Frame 2">
+                            <div class="text-center p-2 bg-black bg-opacity-70">
+                                <div class="text-xs font-bold">FRAME 2 • 18.9s</div>
+                                <div class="text-xs text-gray-400">Score: 91/100</div>
+                            </div>
+                        </div>
+
+                        <!-- Frame 3 Thumbnail -->
+                        <div class="thumbnail" data-type="frame" data-frame="2" data-original="outputs/urban_warfare_training/frames/key_frame_002_28.3s.jpg" data-annotated="outputs/annotated_frames/urban_warfare_training/annotated_002_28.3s.jpg">
+                            <img src="outputs/urban_warfare_training/frames/key_frame_002_28.3s.jpg" alt="Frame 3">
+                            <div class="text-center p-2 bg-black bg-opacity-70">
+                                <div class="text-xs font-bold">FRAME 3 • 28.3s</div>
+                                <div class="text-xs text-gray-400">Score: 62/100</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Personnel Details -->
+            <div class="card">
+                <div class="card-header flex items-center gap-2">
+                    <img src="icons/helm_6142005.png" alt="Helm Icon" class="w-6 h-6">
+                    Training Personnel Details
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-3 gap-3">
+                        <!-- Soldier 1 -->
+                        <div class="personnel-card" onclick="toggleAssessment(this)">
+                            <div class="soldier-header">
+                                <div>
+                                    <div class="soldier-name">3SG Benedict Chua</div>
+                                    <div class="soldier-role">Section IC</div>
+                                    <div class="soldier-unit">Alpha Company • 2nd Platoon</div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 expand-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div class="assessment-content">
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Performance Score</div>
+                                    <div class="assessment-text">
+                                        <span class="score-badge score-good">87/100</span>
+                                        <span style="margin-left: 0.5rem;">Above Average</span>
+                                    </div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Strengths</div>
+                                    <div class="assessment-text">Excellent command presence and weapon discipline. Maintained proper sector coverage throughout engagement.</div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Areas for Improvement</div>
+                                    <div class="assessment-text">Positioning during breach slightly exposed. Recommend more aggressive use of available cover.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Soldier 2 -->
+                        <div class="personnel-card" onclick="toggleAssessment(this)">
+                            <div class="soldier-header">
+                                <div>
+                                    <div class="soldier-name">CPL Marcus Tan</div>
+                                    <div class="soldier-role">Point Man</div>
+                                    <div class="soldier-unit">Alpha Company • 2nd Platoon</div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 expand-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div class="assessment-content">
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Performance Score</div>
+                                    <div class="assessment-text">
+                                        <span class="score-badge score-excellent">92/100</span>
+                                        <span style="margin-left: 0.5rem;">Excellent</span>
+                                    </div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Strengths</div>
+                                    <div class="assessment-text">Outstanding tactical awareness. Proper pie slicing technique and excellent muzzle discipline at entry points.</div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Areas for Improvement</div>
+                                    <div class="assessment-text">Continue current performance. Minor refinement in communication timing during room transitions.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Soldier 3 -->
+                        <div class="personnel-card" onclick="toggleAssessment(this)">
+                            <div class="soldier-header">
+                                <div>
+                                    <div class="soldier-name">LCP David Lim</div>
+                                    <div class="soldier-role">Breacher</div>
+                                    <div class="soldier-unit">Alpha Company • 2nd Platoon</div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 expand-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div class="assessment-content">
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Performance Score</div>
+                                    <div class="assessment-text">
+                                        <span class="score-badge score-good">78/100</span>
+                                        <span style="margin-left: 0.5rem;">Satisfactory</span>
+                                    </div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Strengths</div>
+                                    <div class="assessment-text">Good weapon handling and follows commands promptly. Maintains proper interval in stack formation.</div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Areas for Improvement</div>
+                                    <div class="assessment-text">Standing too upright during stacking phase. Reduce profile and improve low-ready position to minimize exposure.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Soldier 4 -->
+                        <div class="personnel-card" onclick="toggleAssessment(this)">
+                            <div class="soldier-header">
+                                <div>
+                                    <div class="soldier-name">PTE Ryan Wong</div>
+                                    <div class="soldier-role">Rifleman</div>
+                                    <div class="soldier-unit">Alpha Company • 2nd Platoon</div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 expand-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div class="assessment-content">
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Performance Score</div>
+                                    <div class="assessment-text">
+                                        <span class="score-badge score-good">81/100</span>
+                                        <span style="margin-left: 0.5rem;">Good</span>
+                                    </div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Strengths</div>
+                                    <div class="assessment-text">Solid fundamentals and responsive to team movements. Maintains good weapon orientation towards threats.</div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Areas for Improvement</div>
+                                    <div class="assessment-text">Maintain greater spacing from teammates. Risk of clustering in fatal funnel observed during frame 3.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Soldier 5 -->
+                        <div class="personnel-card" onclick="toggleAssessment(this)">
+                            <div class="soldier-header">
+                                <div>
+                                    <div class="soldier-name">CPL Sarah Ng</div>
+                                    <div class="soldier-role">Team 2IC</div>
+                                    <div class="soldier-unit">Alpha Company • 2nd Platoon</div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 expand-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div class="assessment-content">
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Performance Score</div>
+                                    <div class="assessment-text">
+                                        <span class="score-badge score-excellent">89/100</span>
+                                        <span style="margin-left: 0.5rem;">Very Good</span>
+                                    </div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Strengths</div>
+                                    <div class="assessment-text">Excellent split-stack positioning. Demonstrates strong situational awareness and proper use of cover.</div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Areas for Improvement</div>
+                                    <div class="assessment-text">Continue current standard. Minor refinement in dynamic entry timing coordination.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Soldier 6 -->
+                        <div class="personnel-card" onclick="toggleAssessment(this)">
+                            <div class="soldier-header">
+                                <div>
+                                    <div class="soldier-name">LCP Ahmad Ibrahim</div>
+                                    <div class="soldier-role">Rifleman</div>
+                                    <div class="soldier-unit">Alpha Company • 2nd Platoon</div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 expand-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div class="assessment-content">
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Performance Score</div>
+                                    <div class="assessment-text">
+                                        <span class="score-badge score-good">76/100</span>
+                                        <span style="margin-left: 0.5rem;">Satisfactory</span>
+                                    </div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Strengths</div>
+                                    <div class="assessment-text">Demonstrates good team cohesion and follows tactical procedures correctly.</div>
+                                </div>
+                                <div class="assessment-section">
+                                    <div class="assessment-label">Areas for Improvement</div>
+                                    <div class="assessment-text">Work on maintaining proper intervals. Observed compression of stack depth during approach.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Frame analysis data
+        const frameData = {
+            "frame_0": {
+                "timestamp": "9.4s",
+                "soldier_count": 3,
+                "cover_summary": {
+                    "full_cover": 0,
+                    "partial_cover": 3,
+                    "no_cover": 0,
+                    "exposed": 0
+                },
+                "tactical_errors": [
+                    "Soldiers 2 and 3 are standing upright, presenting a larger profile than necessary while stacked, increasing vulnerability to fire or fragmentation upon entry.",
+                    "Soldier 1 appears to be leaning slightly too far into the corner, risking over-exposure before the decision to breach is made."
+                ],
+                "tactical_strengths": [
+                    "Excellent weapon readiness across the team; all weapons are shouldered and aimed into the primary threat area.",
+                    "Tight stack discipline, minimizing the team's footprint at the entry point and maintaining readiness for rapid entry.",
+                    "Effective utilization of the immediate corner structure as partial concealment/cover during the stacking phase."
+                ],
+                "formation": "COLUMN",
+                "score": 85,
+                "rating": "Good"
+            },
+            "frame_1": {
+                "timestamp": "18.9s",
+                "soldier_count": 4,
+                "cover_summary": {
+                    "full_cover": 0,
+                    "partial_cover": 2,
+                    "no_cover": 2,
+                    "exposed": 2
+                },
+                "tactical_errors": [
+                    "The trailing elements (Soldiers 3 and 4) appear slightly too close to the point men, potentially compressing the stack depth and making the approach vulnerable to area denial fire.",
+                    "The overall stack is tightly grouped, increasing the potential for multiple casualties if the threshold is engaged."
+                ],
+                "tactical_strengths": [
+                    "Effective utilization of the split-stack formation, maximizing cover on both sides of the breach point.",
+                    "Point men are positioned correctly to slice the pie or initiate a dynamic entry, maintaining weapons in a high ready/low ready transition state.",
+                    "Good low profile and posture maintained by the point men while utilizing the available partial cover."
+                ],
+                "formation": "SPLIT-STACK",
+                "score": 91,
+                "rating": "Excellent"
+            },
+            "frame_2": {
+                "timestamp": "28.3s",
+                "soldier_count": 4,
+                "cover_summary": {
+                    "full_cover": 0,
+                    "partial_cover": 1,
+                    "no_cover": 0,
+                    "exposed": 3
+                },
+                "tactical_errors": [
+                    "Soldiers 2, 3, and 4 are tightly clustered in or immediately adjacent to the doorway, maximizing exposure in the fatal funnel.",
+                    "Spacing between Soldiers 3 and 4 is too close, increasing the risk of multiple casualties from a single threat (e.g., fragmentation or sustained fire)."
+                ],
+                "tactical_strengths": [
+                    "Dynamic and aggressive posture, minimizing dwell time at the breach point.",
+                    "Soldier 1 (far left) is executing a good split maneuver to address the near-side corner/flank immediately upon entry.",
+                    "Good weapon discipline; weapons are up and oriented downrange towards the immediate threat area."
+                ],
+                "formation": "SPLIT-STACK",
+                "score": 62,
+                "rating": "Needs Improvement"
+            }
+        };
+
+        // Overall summary data (for infographic view)
+        const overallSummary = {
+            "soldier_count": 11,
+            "cover_summary": {
+                "full_cover": 0,
+                "partial_cover": 6,
+                "no_cover": 2,
+                "exposed": 5
+            },
+            "tactical_errors": [
+                "Soldiers 2 and 3 standing upright, presenting larger profile during stacking.",
+                "Soldier 1 leaning too far into corner, risking over-exposure.",
+                "Trailing elements too close to point men, compressing stack depth.",
+                "Tightly grouped stack increases multiple casualty risk at threshold.",
+                "Soldiers 2, 3, 4 clustered in doorway, maximizing fatal funnel exposure."
+            ],
+            "tactical_strengths": [
+                "Excellent weapon readiness; all weapons shouldered and aimed at threat area.",
+                "Tight stack discipline, minimizing footprint at entry point.",
+                "Effective use of corner structure for partial concealment during stacking.",
+                "Effective split-stack formation maximizing cover on both sides.",
+                "Point men positioned correctly for pie slicing or dynamic entry."
+            ],
+            "score": 79.3,
+            "rating": "Good"
+        };
+
+        // State management
+        let currentView = 'infographic'; // 'infographic' or 'frame'
+        let currentFrame = null;
+        let overlayEnabled = false;
+
+        // DOM elements
+        const mainMedia = document.getElementById('mainMedia');
+        const toggleOverlayBtn = document.getElementById('toggleOverlay');
+        const overlayButtonText = document.getElementById('overlayButtonText');
+        const backToSummaryBtn = document.getElementById('backToSummary');
+        const overlayIndicator = document.getElementById('overlayIndicator');
+        const overlayIndicatorText = document.getElementById('overlayIndicatorText');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+
+        // Update assessment summary
+        function updateAssessmentSummary(data) {
+            // Update score
+            document.getElementById('overallScore').textContent = data.score;
+
+            // Update score label and badge
+            const scoreLabel = document.getElementById('scoreLabel');
+            const scoreBadge = document.getElementById('scoreBadge');
+
+            if (currentView === 'frame') {
+                scoreLabel.textContent = `FRAME SCORE (T=${data.timestamp})`;
+            } else {
+                scoreLabel.textContent = 'OVERALL SCORE';
+            }
+
+            scoreBadge.textContent = data.rating.toUpperCase();
+            scoreBadge.className = 'score-badge mt-2';
+            if (data.score >= 90) {
+                scoreBadge.classList.add('score-excellent');
+            } else if (data.score >= 70) {
+                scoreBadge.classList.add('score-good');
+            } else {
+                scoreBadge.classList.add('score-poor');
+            }
+
+            // Update soldier count
+            document.getElementById('soldierCount').textContent = data.soldier_count;
+
+            // Update cover utilization
+            document.getElementById('fullCover').textContent = data.cover_summary.full_cover;
+            document.getElementById('partialCover').textContent = data.cover_summary.partial_cover;
+            document.getElementById('noCover').textContent = data.cover_summary.no_cover;
+            document.getElementById('exposed').textContent = data.cover_summary.exposed;
+
+            // Update tactical errors
+            const errorsList = document.getElementById('errorsList');
+            errorsList.innerHTML = '';
+            data.tactical_errors.forEach(error => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                errorsList.appendChild(li);
+            });
+            document.getElementById('errorsHeader').textContent = `TACTICAL ERRORS (${data.tactical_errors.length})`;
+
+            // Update tactical strengths
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = '';
+            data.tactical_strengths.forEach(strength => {
+                const li = document.createElement('li');
+                li.textContent = strength;
+                strengthsList.appendChild(li);
+            });
+            document.getElementById('strengthsHeader').textContent = `TACTICAL STRENGTHS (${data.tactical_strengths.length})`;
+        }
+
+        // Toggle soldier assessment cards
+        function toggleAssessment(card) {
+            const content = card.querySelector('.assessment-content');
+            const icon = card.querySelector('.expand-icon');
+
+            // Toggle expanded state
+            const isExpanded = content.classList.contains('expanded');
+
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                icon.classList.remove('rotated');
+                card.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                icon.classList.add('rotated');
+                card.classList.add('expanded');
+            }
+        }
+
+        // Toggle overlay functionality
+        toggleOverlayBtn.addEventListener('click', () => {
+            if (currentView === 'frame') {
+                overlayEnabled = !overlayEnabled;
+                updateMediaDisplay();
+                updateOverlayButton();
+            }
+        });
+
+        // Back to summary functionality
+        backToSummaryBtn.addEventListener('click', () => {
+            showInfographic();
+        });
+
+        // Thumbnail click handlers
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', () => {
+                const type = thumbnail.dataset.type;
+
+                // Update active state
+                thumbnails.forEach(t => t.classList.remove('active'));
+                thumbnail.classList.add('active');
+
+                if (type === 'infographic') {
+                    showInfographic();
+                } else if (type === 'frame') {
+                    showFrame(thumbnail);
+                }
+            });
+        });
+
+        function showInfographic() {
+            currentView = 'infographic';
+            currentFrame = null;
+            overlayEnabled = false;
+            mainMedia.src = 'outputs/infographics/infographic_urban_warfare_training.png';
+            toggleOverlayBtn.disabled = true;
+            toggleOverlayBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            overlayIndicator.style.display = 'none';
+
+            // Update active thumbnail
+            thumbnails.forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-type="infographic"]').classList.add('active');
+
+            // Update assessment summary with overall data
+            updateAssessmentSummary(overallSummary);
+        }
+
+        function showFrame(thumbnail) {
+            currentView = 'frame';
+            const frameNumber = thumbnail.dataset.frame;
+            currentFrame = {
+                original: thumbnail.dataset.original,
+                annotated: thumbnail.dataset.annotated,
+                frameNumber: frameNumber
+            };
+            overlayEnabled = true; // Enable overlay by default
+            toggleOverlayBtn.disabled = false;
+            toggleOverlayBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Update assessment summary with frame-specific data
+            const frameKey = `frame_${frameNumber}`;
+            if (frameData[frameKey]) {
+                updateAssessmentSummary(frameData[frameKey]);
+            }
+
+            updateMediaDisplay();
+            updateOverlayButton();
+        }
+
+        function updateMediaDisplay() {
+            if (currentView === 'frame' && currentFrame) {
+                if (overlayEnabled) {
+                    mainMedia.src = currentFrame.annotated;
+                    overlayIndicator.style.display = 'block';
+                    overlayIndicatorText.textContent = 'Tactical Analysis Overlay';
+                } else {
+                    mainMedia.src = currentFrame.original;
+                    overlayIndicator.style.display = 'block';
+                    overlayIndicatorText.textContent = 'Original Frame';
+                }
+            }
+        }
+
+        function updateOverlayButton() {
+            if (overlayEnabled) {
+                overlayButtonText.textContent = 'Hide Analysis';
+                toggleOverlayBtn.classList.add('active');
+            } else {
+                overlayButtonText.textContent = 'Show Analysis';
+                toggleOverlayBtn.classList.remove('active');
+            }
+        }
+
+        // Initialize
+        toggleOverlayBtn.disabled = true;
+        toggleOverlayBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    </script>
+</body>
+</html>

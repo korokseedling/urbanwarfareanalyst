@@ -30,13 +30,18 @@ wheels/
 .ipynb_checkpoints
 *.ipynb_checkpoints/
 
-# Output directories
-outputs/
+# Output directories (but allow specific demo files for deployment)
+outputs/**/*.json
 *.mp4
 *.mov
 *.avi
 *.mkv
 *.wmv
+
+# Allow demo outputs for web deployment
+!outputs/infographics/
+!outputs/urban_warfare_training/frames/
+!outputs/annotated_frames/
 
 # IDE
 .vscode/
